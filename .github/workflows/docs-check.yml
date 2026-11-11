@@ -1,0 +1,40 @@
+name: Documentation checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check documentation and credential patterns
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          readme = Path("README.md").read_text(encoding="utf-8")
+          assert "\ufffd" not in readme, "Invalid README encoding"
+          assert "Vibecoding" in readme and "AI辅助开发" in readme
+          assert "https://hehao0020.github.io/sensitive-check/" in readme
+          assert Path("docs/images/tool-interface.png").read_bytes().startswith(b"\x89PNG\r\n\x1a\n")
+          patterns = [
+              r"\bsk-[A-Za-z0-9_-]{20,}\b",
+              r"\bgh[pousr]_[A-Za-z0-9]{20,}\b",
+              r"\bgithub_pat_[A-Za-z0-9_]{20,}\b",
+              r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
+          ]
+          checked = 0
+          for path in Path(".").rglob("*"):
+              if not path.is_file() or ".git" in path.parts:
+                  continue
+              if path.suffix.lower() not in {".html", ".js", ".css", ".md", ".json", ".yml", ".yaml", ".svg"}:
+                  continue
+              text = path.read_text(encoding="utf-8")
+              assert not any(re.search(p, text) for p in patterns), f"Potential credential in {path}"
+              checked += 1
+          print(f"Documentation checks passed; scanned {checked} text files. Pattern checks are not a full security audit.")
+          PY
