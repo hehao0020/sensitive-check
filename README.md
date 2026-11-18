@@ -13,7 +13,7 @@
 ![词库分类](https://img.shields.io/badge/词库-18类-F97316)
 
 <!-- 编辑位 1：在线体验链接；已填入当前 GitHub Pages 地址，可替换。 -->
-### [🚀 在线体验](https://hehao0020.github.io/sensitive-check/) · [🐛 反馈问题](https://github.com/hehao0020/sensitive-check/issues)
+### [🚀 在线体验](https://hehao0020.github.io/sensitive-check/) · [🐛 反馈问题](https://github.com/hehao0020/sensitive-check/issues) · [📄 产品需求与迭代记录](docs/PRD.md)
 
 </div>
 
